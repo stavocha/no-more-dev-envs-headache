@@ -1,0 +1,16 @@
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+.terragrunt-cache
+terragrunt-debug.tfvars.json
+
+.DS_Store
+.vscode
+.idea
+
+.secrets
+.env
+
+repopack*

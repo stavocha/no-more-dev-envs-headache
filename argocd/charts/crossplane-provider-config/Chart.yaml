@@ -1,0 +1,5 @@
+apiVersion: v2
+name: crossplane-provider-config
+description: A Helm chart for Crossplane with AWS provider and configurations
+type: application
+version: 0.1.0

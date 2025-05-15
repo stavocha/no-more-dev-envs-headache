@@ -1,0 +1,19 @@
+apiVersion: sqs.aws.upbound.io/v1beta1
+kind: Queue
+metadata:
+  name: user-registration-queue
+  annotations:
+    crossplane.io/external-name: user-registration-queue
+spec:
+  forProvider:
+    region: us-east-1
+    delaySeconds: 0
+    maxMessageSize: 262144
+    messageRetentionSeconds: 345600
+    receiveWaitTimeSeconds: 0
+    visibilityTimeoutSeconds: 30
+  writeConnectionSecretToRef:
+    name: sqs-queue-connection
+    namespace: subscribers-app
+  providerConfigRef:
+    name: irsa-providerconfig

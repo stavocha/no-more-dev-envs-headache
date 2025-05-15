@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crossplane
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.crossplane.io/stable
+    targetRevision: "1.19"
+    chart: crossplane
+    helm:
+      values: |
+      args:
+        - --enable-composition-functions
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+      serviceAccount:
+        create: true
+        name: provider-aws
+        annotations:
+          eks.amazonaws.com/role-arn: <crossplane-role-arn>
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: crossplane-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

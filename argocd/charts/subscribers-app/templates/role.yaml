@@ -1,0 +1,89 @@
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: subscribers-app-role
+  annotations:
+    crossplane.io/external-name: subscribers-app-role
+spec:
+  forProvider:
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "pods.eks.amazonaws.com"
+            },
+            "Action": [
+              "sts:AssumeRole",
+              "sts:TagSession"
+            ]
+          }
+        ]
+      }
+    description: "Role for subscribers-app to access SQS and SNS using AWS Pod Identity"
+    tags:
+      Name: subscribers-app-role
+    region: {{ .Values.aws_region }}
+  providerConfigRef:
+    name: irsa-providerconfig
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: RolePolicy
+metadata:
+  name: subscribers-app-policy
+  annotations:
+    crossplane.io/external-name: subscribers-app-policy
+spec:
+  forProvider:
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "sqs:SendMessage",
+              "sqs:ReceiveMessage",
+              "sqs:DeleteMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:GetQueueUrl",
+              "sqs:ListQueues",
+              "sqs:ChangeMessageVisibility"
+            ],
+            "Resource": "*"
+          },
+          {
+            "Effect": "Allow",
+            "Action": [
+              "sns:Publish",
+              "sns:Subscribe",
+              "sns:Unsubscribe",
+              "sns:ListTopics",
+              "sns:GetTopicAttributes",
+              "sns:SetTopicAttributes"
+            ],
+            "Resource": "*"
+          }
+        ]
+      }
+    role: subscribers-app-role
+    region: {{ .Values.aws_region }}
+  providerConfigRef:
+    name: irsa-providerconfig
+---
+apiVersion: eks.aws.upbound.io/v1beta1
+kind: PodIdentityAssociation
+metadata:
+  name: subscribers-app-pod-identity
+spec:
+  forProvider:
+    clusterName: {{ .Values.cluster_name }}
+    namespace: {{ .Release.Namespace }}
+    serviceAccount: subscribers-app
+    roleArnRef:
+      name: subscribers-app-role
+    region: {{ .Values.aws_region }}
+  providerConfigRef:
+    name: irsa-providerconfig

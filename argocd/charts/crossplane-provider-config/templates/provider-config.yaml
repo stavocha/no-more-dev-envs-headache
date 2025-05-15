@@ -1,0 +1,9 @@
+apiVersion: aws.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: irsa-providerconfig
+spec:
+  credentials:
+    source: IRSA
+  assumeRole:
+    roleARN: {{ .Values.aws.roleArn }}

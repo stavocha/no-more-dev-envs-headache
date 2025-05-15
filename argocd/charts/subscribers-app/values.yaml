@@ -1,0 +1,29 @@
+aws_region: us-east-1
+replicaCount: 1
+cluster_name: dev1-eks-cluster
+
+image:
+  repository: ghcr.io/stavocha/no-more-dev-env-headaches/subscribers
+  tag: latest
+  pullPolicy: Always
+
+serviceAccount:
+  name: subscribers-app
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80 

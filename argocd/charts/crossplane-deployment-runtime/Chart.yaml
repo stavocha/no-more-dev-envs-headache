@@ -1,0 +1,5 @@
+apiVersion: v2
+name: crossplane-deployment-runtime
+description: A Helm chart for Crossplane deployment runtime configuration
+type: application
+version: 0.1.0
