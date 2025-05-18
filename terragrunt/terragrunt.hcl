@@ -1,17 +1,3 @@
-# remote_state {
-#   backend = "s3"
-#   config = {
-#     bucket         = "your-terraform-state-bucket"
-#     key            = "${path_relative_to_include()}/terraform.tfstate"
-#     region         = "us-east-1"
-#     encrypt        = true
-#     dynamodb_table = "terraform-locks"
-#   }
-#   generate = {
-#     path      = "backend.tf"
-#     if_exists = "overwrite"
-#   }
-# }
 
 locals {
   env     = read_terragrunt_config(find_in_parent_folders("env.hcl"))
@@ -49,19 +35,4 @@ generate "provider" {
 
   EOF
 }
-
-# remote_state {
-#   backend = "s3"
-#   config = {
-#     bucket         = "terraform-state-${get_aws_account_id()}"
-#     key            = "${path_relative_to_include()}/terraform.tfstate"
-#     region         = "us-east-1"
-#     encrypt        = true
-#     dynamodb_table = "terraform-locks"
-#   }
-#   generate = {
-#     path      = "backend.tf"
-#     if_exists = "overwrite_terragrunt"
-#   }
-# }
 
