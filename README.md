@@ -37,7 +37,7 @@ A modern web application that demonstrates best practices for cloud-native devel
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/stavocha/no-more-dev-envs-headache.git
    cd no-more-dev-envs-headaches
    ```
 
